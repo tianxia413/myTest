@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <title>东走西走</title>
+    <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/model/model/comon.css" media="all">
+    <style>
+        .box{
+            margin-left: 0;
+            margin-right: 0;
+            margin-top: 30px;
+        }
+
+    </style>
+</head>
+    <body>
+        <div class="box">
+            <div class="bg-white">
+                <form class="layui-form">
+                    <div class="layui-row layui-form pad-top-10 pad-right-20">
+                        <div class="layui-col-xs12 layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">IP</label>
+                                <div class="layui-input-block">
+                                    <input type="text" class="layui-input" name="IP" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">PC标志</label>
+                                <div class="layui-input-block">
+                                    <input type="text" class="layui-input" name="pcsign" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">秘钥</label>
+                                <div class="layui-input-block">
+                                    <input type="text" class="layui-input" name="pckey" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">用户名</label>
+                                <div class="layui-input-block">
+                                    <input type="text" class="layui-input" name="user">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">用户密码</label>
+                                <div class="layui-input-block">
+                                    <input type="text" class="layui-input" name="password">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="hidden">
+                </form>
+                <div class="text-center btns layui-col-md10 mar-top-30 pad-bottom-20">
+                    <button class="layui-btn layui-btn-lg layui-btn-danger font16" id="sure">确定</button>
+                    <button class="layui-btn layui-btn-lg layui-bg-cyan font16" id="close">关闭</button>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="../../layuiadmin/js/modules/jquery.min.js"></script>
+    <script src="../../layuiadmin/layui/layui.js"></script>
+·   <script src="../../layuiadmin/layui/lay/modules/layer.js"></script>
+    <script src="../../layuiadmin/js/modules/common.js"></script>
+    <script>
+        $(function(){
+            var str=window.location.href;
+            var jsonstr=decodeURIComponent(str,'utf-8');
+            var newjsonstr= (jsonstr.split('?')[1]).split('=')[1];
+            var jsonObj =  JSON.parse(newjsonstr);//转换为json对象
+            $("input[name=hidden]").val(jsonObj.kid);
+            $("input[name=user]").val(jsonObj.loginno);
+            $("input[name=password]").val(jsonObj.loginpwd);
+            $("input[name=IP]").val(jsonObj.srcip);
+            $("input[name=pcsign]").val(jsonObj.pcsign);
+            $("input[name=pckey]").val(jsonObj.pckey);
+        });
+        $("#sure").click(function () {
+            var message=new Object();
+            message.kid=$("input[name=hidden]").val();
+            message.loginno=$("input[name=user]").val();
+            if ( message.loginno == null ||  message.loginno == "") {
+                layer.msg("用户名必填项");
+                return;
+            }
+
+            message.loginpwd =$("input[name=password]").val();
+            if (message.loginpwd == null || message.loginpwd == "") {
+                layer.msg("用户密码必填项");
+                return;
+            }
+            message.srcip=$("input[name=IP]").val();
+            message.pcsign=$("input[name=pcsign]").val();
+            message.pckey=$("input[name=pckey]").val();
+            if(message.kid==""){
+                //添加
+                url="";
+                smscenterSure(url,message);
+            }else{
+                //编辑
+                url=getAddress()+"/sms/edit";
+                smscenterSure(url,message);
+            }
+        });
+        function smscenterSure(url,message) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify(message),
+                dataType: 'json',
+                contentType: "application/json;charset=UTF-8",
+                success : function(data){
+                    if(data.status==0){
+                      /*  layer.msg(data.msg,{icon: 1});*/
+                        window.setTimeout(function () {
+                            window.parent.location.reload();
+                        }, 100);
+                    }else{
+                        layer.msg(data.msg,{icon: 2});
+                    }
+                },error: function () {
+                    layer.msg("网络故障");
+                }
+            });
+        }
+        $('#close').click(function () {
+            var index = parent.layer.getFrameIndex(window.name);
+            console.log(index);
+            parent.layer.close(index)
+        })
+    </script>
+</html>
+

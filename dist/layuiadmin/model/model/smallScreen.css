@@ -1,0 +1,59 @@
+body{
+    color: #666;
+    padding-bottom: 150px;
+    height: 100%;
+}
+.head span{
+    margin-left: 15px;
+    margin-right: 0;
+    font-size: 1rem;
+}
+.body .tr-num{
+    display: inline-block;
+    margin-top: 10px;
+}
+.body .tr-time{
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+.right{
+    padding-left: 0px;
+    margin-top: 5px;
+}
+.ord-state{
+    position: fixed;
+    bottom: 15px;
+    z-index: 1000;
+    margin-right: 16px;;
+    width: 750px;
+}
+.peo{
+    margin-left: 70px;
+}
+.contract .box{
+    padding: 0;
+}
+.gw_num{
+    float: right;
+}
+.rolling{
+    overflow-x: scroll;
+}
+.input{
+    width: 125px;
+}
+.my_input{
+    width: 160px;
+}
+.city{
+    margin-left: 110px;
+    margin-top: 10px;
+}
+.contract .box{
+    padding: 0;
+}
+
+
+
+

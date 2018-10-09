@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layuiAdmin 控制台主页一</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/model/model/comon.css" media="all">
+</head>
+<style>
+    @media only screen and (max-width: 600px) {
+        #box {
+            margin-left: 0;
+            margin-right: 0;
+        }
+        #table-content{
+            margin: 0;
+            padding: 0;
+        }
+        #btns button{
+            border-radius: 5px;
+            height: 35px;
+            line-height: 35px;
+            width: 110px;
+            margin-right: 5px;
+        }
+    }
+    .CreateStarTime, .CreateEndTime{
+        display: inline-block;
+        width: calc((100% - 145px) / 2.0 )!important;
+    }
+    #btns{
+        text-align: center;
+        padding-top: 20px;
+        padding-bottom: 30px;
+    }
+    #btns button{
+        border-radius: 5px;
+        height: 35px;
+        line-height: 35px;
+        width: 120px;
+        margin-right: 15px;
+    }
+    #btns button:first-child{
+        background-color: #FF3300!important;
+    }
+    #btns button:nth-child(2){
+        background-color: #2D93CA;
+    }
+    #btns button:last-child{
+        background-color: #44bb00;
+    }
+    #box{
+        height: 820px;
+    }
+    #table-content{
+        padding: 10px 20px;
+    }
+</style>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="bg-white" id="box">
+                <form class="layui-form bor-bottom-solid-1">
+                    <div class="layui-row layui-form pad-top-10 pad-right-20">
+                        <div class="layui-col-xs12 layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">电话号码</label>
+                                <div class="layui-input-block w250">
+                                    <input type="text" class="layui-input" name="phone">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">发送时间</label>
+                                <div class="CreateStarTime box" >
+                                    <input type="text" name="start_time" placeholder="2016-08-06" autocomplete="off" class="layui-input" id="start_time" >
+                                </div>
+                                <span>-</span>
+                                <div class=" CreateEndTime box">
+                                    <input type="text" name="end_time" placeholder="2018-08-08" autocomplete="off" class="layui-input" id="end_time" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">发送状态</label>
+                                <div class="layui-input-block w250" id="sendStatus">
+                                    <select name="interest">
+                                        <option value=" " >全部</option>
+                                        <option value="1" >成功</option>
+                                        <option value="0" >失败</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-md3">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">短信类型</label>
+                                <div class="layui-input-block w250" id="msType">
+                                    <select name="interest">
+                                        <option value="" >全部</option>
+                                        <option value="0" >通知短信</option>
+                                        <option value="4" >验证码短信</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="btns" class="mar-top-10">
+                        <button type="button" class="layui-btn" id="del_All">批量删除</button>
+                        <button type="button" class="layui-btn" id="user_select">查询</button>
+                    </div>
+                </form>
+                <div id="table-content">
+                    <div id="table-box">
+                        <table class="layui-table" id="content-table" lay-filter="demo"></table>
+                        <div id="page" class="pull-right"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--编辑弹框-->
+<div class="layui-card-body pad-top-30 pad-left-20 contract" id="remark_phone" style="display:none">
+    <div class="layui-form-item layui-form-text">
+        <div class="layui-inline">
+            <label class="layui-form-label">设置电话</label>
+            <div class="layui-input-inline">
+                <input type="hidden" id="KID">
+                <input type="text" id="SystemPhone" placeholder="请设置电话" autocomplete="on" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="boun">
+        <button class="layui-btn layui-btn-lg layui-bg-cyan close">关闭</button>
+        <button class="layui-btn layui-btn-danger layui-btn-lg sure" id="szjg_btn_ok">确认</button>
+    </div>
+</div>
+<script src="../../layuiadmin/js/modules/jquery.min.js"></script>
+<script src="../../layuiadmin/layui/layui.js"></script>
+<script src="../../layuiadmin/js/modules/common.js"></script>
+<script type="text/html" id="barDemo">
+    <a lay-event="edit" class="demo-class" id="edit"><button class="layui-btn layui-btn-xs" style="background-color:#1E9FFF">编辑</button></a>
+
+    <a lay-event="del" class="demo-class" id="del"><button class="layui-btn layui-btn-xs" style="background-color: #FF5722">删除</button></a>
+</script>
+<script type="text/html" id="smsType">
+    {{#  if(d.smsType ===0){ }}
+    <span style="color: #FFF; background-color:#42AC24; padding: 2px 5px ">通知短信</span>
+    {{#  } else
+    if(d.smsType ===4){ }}
+    <span style="color: #FFF; background-color:#01AAED; padding: 2px 5px ">验证码短信</span>
+    {{#  }}}
+</script>
+<script type="text/html" id="sendSta">
+    {{#  if(d.sendStatus ===0){ }}
+    <span style="color: #FFF; background-color:#FF5722; padding: 2px 5px ">失败</span>
+    {{#  } else
+    if(d.sendStatus ===1){ }}
+    <span style="color: #FFF; background-color:#01AAED; padding: 2px 5px ">成功</span>
+    {{#  }}}
+</script>
+<script type="text/html" id="smsSendStatus">
+    {{#  if(d.smsSendStatus ===0){ }}
+    <span style="color: #FFF; background-color:#01AAED; padding: 2px 5px ">未获取</span>
+    {{#  } else
+    if(d.smsSendStatus ===10){ }}
+    <span style="color: #FFF; background-color:#01AAED; padding: 2px 5px ">发送成功</span>
+    {{#  }else
+    if(d.smsSendStatus ===20){ }}
+    <span style="color: #FFF; background-color:#FF5722; padding: 2px 5px ">发送失败</span>
+    {{#  }
+    if(d.smsSendStatus ===-1){ }}
+    <span style="color: #FFF; background-color:#FF5722; padding: 2px 5px ">获取失败</span>
+    {{#  }
+    }}
+</script>
+<script type="text/javascript">
+    layui.use(['form','table','laypage'], function() {
+        var form = layui.form;
+        var table = layui.table;
+        var laypage = layui.laypage;
+        var $ = layui.jquery, layer = layui.layer;
+        form.render();
+        //每页显示记录数
+        var size = 10;
+        //当前页
+        var offset = 1;
+        var message = new Object();
+        getShopCustomerManagePageInfo(offset, size, message);
+        $('#user_select').click(function () {
+            message.toPhoneNum = $("input[name=phone]").val();
+            message.startTime = $("input[name=start_time]").val();
+            message.endTime = $("input[name=end_time]").val();
+            message.sendStatus=$("#sendStatus").find("option:selected").val();
+            message.smsType=$("#msType").find("option:selected").val();
+            getShopCustomerManagePageInfo(offset, size, message)
+        });
+        function getShopCustomerManagePageInfo(offset, size, message) {
+            message.size = size;
+            message.offset = offset;
+            parent.layer.msg('查询中...', {icon: 16, shade: 0.3, time: 1000});
+            $.ajax({
+                type: "post",
+                crossDomain: true,
+                url: getAddress()+"/smslog/getSmssendLog",
+                data: JSON.stringify(message),
+                dataType: 'json',
+                contentType: "application/json;charset=UTF-8",
+                success: function (data) {
+                    if (data.status == 0) {
+                        getShopCustomesInfo(data.data.datalist, data.data.count)
+                    } else {
+                        layer.msg(data.msg,{icon: 2});
+                    }
+                }, error: function () {
+                    layer.msg("网络故障");
+                }
+            });
+        }
+        function getShopCustomesInfo(datalist, pageCount) {
+            table.render({
+                elem: '#content-table',
+                data: datalist,
+                cols: [[
+                    {type: 'checkbox'},
+                    {field: 'keyID', title: '主键ID', width: '80', align: 'center'},
+                    {field: 'appFlag', title: '发送方标识', width: '100', align: 'center'},
+                    {field: 'appName', title: '授权应用名称', width: '150', align: 'center'},
+                    {field: 'toPhoneNum', title: '电话号码', width: '209', align: 'center'},
+                    {field: 'sendTime', title: '发送时间', width: '200', align: 'center'},
+                    {field: 'smsType', title: '短信类型', width: '150', align: 'center',templet: '#smsType'},
+                    {field: 'sendStatus', title: '发送状态', width: '100', align: 'center',templet: '#sendSta'},
+                    {field: 'smsSendStatus', title: '短信发送状态', width: '100', align: 'center',templet: '#smsSendStatus'},
+                    {field: 'smsRecTime', title: '短信用户接收时间', width: '140', align: 'center'},
+                    {field: 'checkTime', title: '查询接口时间', width: '140', align: 'center'},
+                    {field: 'operation', title: '操作', width: '200', align: 'center', toolbar: "#barDemo"}
+                ]],
+                page: false,
+                done: function (res, curr) {
+                    laypage.render({
+                        theme: '#ff5a1e',
+                        elem: 'page',
+                        count: pageCount,
+                        curr: offset,
+                        limit: size,
+                        layout: ['prev', 'page', 'next', 'count', 'limit'],
+                        jump: function (obj, first) {
+                            if (!first) {
+                                offset = obj.curr;
+                                size = obj.limit;
+                                getShopCustomerManagePageInfo(offset, size, message);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        table.on('tool(demo)', function (obj) {
+            var data = obj.data;
+            var kid = data.keyID;
+            if(obj.event === 'del'){
+                layer.confirm('您确定要删除这条数据吗？', {btn: ['确定', '取消']}, function () {
+                    layer.closeAll('dialog');
+                    $.ajax({
+                        type: "post",
+                        url: getAddress()+"/smslog/del",
+                        data: {"kid": kid},
+                        dataType: 'json',
+                        success : function(data){
+                            if(data.status==0){
+                                layer.msg(data.msg,{icon: 1});
+                                getShopCustomerManagePageInfo(offset, size, message);
+                            }else{
+                                layer.msg(data.msg,{icon: 2});
+                            }
+                        },error: function () {
+                            layer.msg("网络故障");
+                        }
+                    });
+                });
+            }else if(obj.event === 'edit'){
+                $.ajax({
+                    type: "GET",
+                    url: getAddress()+"/smslog/toedit",
+                    data: {"kid": kid},
+                    success : function(data){
+                        if(data.status==0){
+                            setPhone(data.data);
+                        }else{
+                            layer.msg(data.msg,{icon: 2});
+                        }
+                    },error: function () {
+                        layer.msg("网络故障");
+                    }
+                });
+            }
+        });
+        function setPhone(data) {
+            layer.open({
+                type: 1,
+                shade: [0.8, '#989898'],
+                title: ['设置电话', 'font-size:16px;letter-spacing: 1px;'],
+                content: $('#remark_phone'),
+                area: 420 + 'px',
+                success: function(layero, index) {
+                    var remark_phone=$("#remark_phone");
+                    remark_phone.find("#SystemPhone").val(data.toPhoneNum)
+                    remark_phone.find("#KID").val(data.keyID);
+                },
+                end:function(){
+                    $("#remark_phone").hide();
+                },
+            });
+        }
+        $("#del_All").click(function () {
+            var checkStatus = table.checkStatus('content-table');
+            if(checkStatus.data.length==0){
+                parent.layer.msg('请先选择要删除的数据行！', {icon: 2});
+                return ;
+            }
+            var ids = "";
+            console.log(checkStatus.data.length);
+            for(var i=0;i<checkStatus.data.length;i++) {
+                ids += checkStatus.data[i].keyID+",";
+            }
+            parent.layer.msg('删除中...', {icon: 16,shade: 0.3,time:1000});
+            $.ajax({
+                type: "post",
+                url: getAddress()+"/smslog/delAll",
+                data: {'ids': ids},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.status == 0) {
+                        layer.msg(data.msg, {icon: 1});
+                        getShopCustomerManagePageInfo(offset, size, message);
+                    } else {
+                        layer.msg(data.msg, {icon: 2});
+                        window.setTimeout(function () {
+                            getShopCustomerManagePageInfo(offset, size, message);
+                        }, 600);
+                    }
+                }, error: function () {
+                    layer.msg("网络故障");
+                }
+            });
+        });
+        $("#szjg_btn_ok").click(function () {
+            var message=new Object();
+            var remark_phone=$("#remark_phone");
+            message.toPhoneNum=remark_phone.find("#SystemPhone").val();
+            message.keyID=remark_phone.find("#KID").val();
+            if(message.keyID!=""){
+                if(message.toPhoneNum=="") {
+                    layer.msg("电话号码不能为空", {icon: 2});
+                    return;
+                }
+                $.ajax({
+                    type: "POST",
+                    url:getAddress()+"/smslog/edit" ,
+                    data: JSON.stringify(message),
+                    dataType: 'json',
+                    contentType: "application/json;charset=UTF-8",
+                    success : function(data){
+                        if(data.status==0){
+                            layer.msg(data.msg,{icon: 1});
+                            window.setTimeout(function () {
+                                window.parent.location.reload();
+                            }, 200);
+                        }else{
+                            layer.msg(data.msg,{icon: 2});
+                        }
+                    },error: function () {
+                        layer.msg("网络故障");
+                    }
+                });
+            }else{
+                layer.msg("编辑失败",{icon: 2});
+            }
+        });
+    });
+</script>
+</body>
+</html>
+

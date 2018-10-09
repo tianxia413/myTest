@@ -1,0 +1,170 @@
+body,html{
+    font-size: 16px;
+    background-color: #f0f3fa;
+}
+.head{
+    background-color: #FFF;
+    height: 50px;
+    line-height: 50px;
+    padding-left: 20px;
+}
+#box{
+    margin:20px 30px;
+    background-color: #FFFFFF;
+}
+#btns{
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 30px;
+}
+#btns button{
+    border-radius: 5px;
+    height: 35px;
+    line-height: 35px;
+    width: 120px;
+    margin-right: 15px;
+}
+#btns button:first-child{
+    background-color: #FF3300!important;
+}
+#btns button:nth-child(2){
+    background-color: #2D93CA;
+}
+#btns button:last-child{
+    background-color: #44bb00;
+}
+#table-content{
+    margin: 20px 30px;
+    padding-bottom: 50px;
+}
+.demo-class{
+    color:#2974f0;
+    margin-right: 5px;
+    cursor: pointer;
+}
+/******审核弹框*******/
+.audit_box{
+    background-color: #fff;
+    padding: 20px;
+}
+.btns button{
+    border-radius: 5px;
+    width: 130px;
+    margin-right: 20px;
+}
+/**添加企业用户**/
+#add-box{
+    margin: 20px 30px;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 45px;
+    background-color: #FFFFFF;
+}
+.add-message div{
+    margin-top: 5px;
+}
+.message{
+    width: 100%;
+    height: 35px;
+    background-color: #f0f3fa;
+    line-height: 40px;
+    font-size: 20px;
+    padding-left: 10px;
+    font-weight: 600;
+}
+.add-message div .name{
+    width: 150px;
+    text-align: right;
+}
+.add-message div .input{
+    margin-left: 180px;
+}
+.name{
+    width: 120px;
+}
+.name:before {
+    content: "*";
+    color: #ee7070;
+    line-height: 30px;
+}
+.upload{
+    width: 80px;
+    height: 80px;
+    border: 1px solid #f0f3fa;
+    line-height: 80px;
+    text-align: center;
+    font-size: 25px;
+    display: inline-block;
+}
+.upload:hover{
+    cursor: pointer;
+}
+.img-preview-item {
+    width: 150px;
+    height: 100px;
+    margin-top: 5px;
+}
+.img-preview-item-delete {
+    border: none;
+    background-color: transparent;
+    position: relative;
+    right: 20px;
+    top: -40px;
+}
+.img-preview-item-delete:hover{
+    cursor: pointer;
+}
+.add-message div span{
+    display: inline-block;
+    width: 190px;
+    font-size: 12px;
+    color: #d2d2d2;
+}
+ .prompt{
+     display: inline-block;
+     width: 100px;
+     height: 50px;
+     background-color: #FFD24C;
+     padding-top: 5px;
+     padding-left: 5px;
+     font-size: 14px;
+     box-shadow: darkgrey 5px 5px 10px ;
+     margin-left: 45px;
+}
+.btn{
+    text-align: center;
+    margin-bottom: 10px;
+}
+.mybtn button{
+    width: 120px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+.mybtn button:first-child{
+    background-color: #2F4056;
+}
+ .btn button{
+    padding-left: 55px;
+    padding-right: 55px;
+    border-radius: 5px;
+    background-color: #ff5a1e;
+    font-size: 16px;
+}
+#transportation-tool > div {
+    width: 120px;
+    display: inline-block;
+}
+/**合同管理**/
+.CreateStarTime, .CreateEndTime{
+    width: calc((100% - 190px) / 2.0 ) !important;
+    position: relative;
+}
+/***添加模板**/
+.templateIDAuto{
+    display: inline-block;
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    background-color: #f0f3fa;
+    text-align: center;
+}

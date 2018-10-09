@@ -1,0 +1,319 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>用户日志列表</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" href="../../layuiadmin/model/model/comon.css" media="all">
+</head>
+<style>
+  @media only screen and (max-width: 600px) {
+    #box {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    #table-content{
+      margin: 0;
+      padding: 0;
+    }
+    #btns button{
+      border-radius: 5px;
+      height: 35px;
+      line-height: 35px;
+      width: 110px;
+      margin-right: 5px;
+    }
+  }
+  .CreateStarTime, .CreateEndTime{
+    display: inline-block;
+    width: calc((100% - 145px) / 2.0 )!important;
+  }
+  #btns{
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 30px;
+  }
+  #btns button{
+    border-radius: 5px;
+    height: 35px;
+    line-height: 35px;
+    width: 120px;
+    margin-right: 15px;
+  }
+  #btns button:first-child{
+    background-color: #FF3300!important;
+  }
+  #btns button:nth-child(2){
+    background-color: #2D93CA;
+  }
+  #btns button:last-child{
+    background-color: #44bb00;
+  }
+  #box{
+    height: 820px;
+  }
+  #table-content{
+    padding: 10px 20px;
+  }
+</style>
+<body>
+  <div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="bg-white" id="box">
+              <form class="layui-form bor-bottom-solid-1">
+                <div class="layui-row layui-form pad-top-10">
+                  <div class="layui-col-xs12 layui-col-md3">
+                    <div class="layui-form-item">
+                      <label class="layui-form-label">用户名</label>
+                      <div class="layui-input-block w250">
+                        <input type="text" class="layui-input" name="user">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="layui-col-xs12 layui-col-md3">
+                    <div class="layui-form-item">
+                      <label class="layui-form-label">创建时间</label>
+                      <div class="CreateStarTime box" >
+                        <input type="text" name="start_time" placeholder="2016-08-06" autocomplete="off" class="layui-input" id="start_time" >
+                      </div>
+                      <span>-</span>
+                      <div class=" CreateEndTime box">
+                        <input type="text" name="end_time" placeholder="2018-08-08" autocomplete="off" class="layui-input" id="end_time" >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="btns" class="mar-top-10">
+                    <button type="button" class="layui-btn" id="del_All">批量删除</button>
+                    <button type="button" class="layui-btn" id="user_select">查询</button>
+                </div>
+              </form>
+              <div id="table-content">
+                <div id="table-box">
+                  <table class="layui-table" id="content-table" lay-filter="demo"></table>
+                  <div id="page" class="pull-right"></div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <script src="../../layuiadmin/layui/layui.js?t=1"></script>
+  <script src="../../layuiadmin/js/modules/jquery.min.js?t=1"></script>
+  <script src="../../layuiadmin/js/modules/common.js?t=1"></script>
+  <script>
+  /*layui.config({
+    base: '../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'console']);*/
+  </script>
+  <script type="text/html" id="barDemo">
+    {{#  if(d.hascheck ===0){ }}
+    <a lay-event="allow" class="demo-class"><button class="layui-btn layui-btn-xs"style="background-color:#1E9FFF">允许</button></a>
+    {{#  }else
+    if(d.hascheck ===1){ }}
+    <a lay-event="allow" class="demo-class"><button class="layui-btn layui-btn-xs"style="background-color:#1E9FFF">不允许</button></a>
+    {{#  }}}
+    <a lay-event="edit" class="demo-class" id="edit"><button class="layui-btn layui-btn-xs"style="background-color:#1E9FFF">编辑</button></a>
+    <a lay-event="del" class="demo-class" id="del"><button class="layui-btn layui-btn-xs" style="background-color: #FF5722">删除</button></a>
+  </script>
+  <script type="text/html" id="busines">
+    {{#  if(d.hascheck ===0){ }}
+    <span style="color: #FFF; background-color: #FF5722; padding: 2px 5px ">不允许</span>
+    {{#  } else
+    if(d.hascheck ===1){ }}
+    <span style="color: #FFF; background-color:#01AAED; padding: 2px 5px ">允许</span>
+    {{#  }}}
+  </script>
+  <script type="text/javascript">
+    layui.use(['form','table','laypage'], function() {
+      var form = layui.form;
+      var table = layui.table;
+      var laypage = layui.laypage;
+      var $ = layui.jquery, layer = layui.layer;
+      form.render();
+      //每页显示记录数
+      var size = 10;
+      //当前页
+      var offset = 1;
+      var message = new Object();
+      getShopCustomerManagePageInfo(offset, size, message)
+      $('#user_select').click(function () {
+        message.loginno = $("input[name=user]").val();
+        message.startTime = $("input[name=start_time]").val();
+        message.endTime = $("input[name=end_time]").val();
+        getShopCustomerManagePageInfo(offset, size, message)
+      });
+      function getShopCustomerManagePageInfo(offset, size, message) {
+        message.size = size;
+        message.offset = offset;
+        parent.layer.msg('查询中...', {icon: 16,shade: 0.3,time:200});
+        $.ajax({
+          type: "post",
+          crossDomain: true,
+          url: getAddress()+"/sms/getSmsinteruserauthList",
+          data: JSON.stringify(message),
+          dataType: 'json',
+          contentType: "application/json;charset=UTF-8",
+          success: function (data) {
+            if (data.status == 0) {
+              console.log(data.data.count);
+              getShopCustomesInfo(data.data.datalist, data.data.count)
+            } else {
+              alert(222);
+            }
+          }, error: function () {
+            layer.msg("网络故障");
+          }
+        });
+      }
+      function getShopCustomesInfo(datalist, pageCount) {
+        table.render({
+          elem: '#content-table',
+          data: datalist,
+          cols: [[
+            {type: 'checkbox',field: 'check'},
+            {field: 'kid', title: '主键ID', width: '80', align: 'center'},
+            {field: 'srcip', title: 'IP', width: '200', align: 'center'},
+            {field: 'pcsign', title: 'PC标志', width: '231', align: 'center'},
+            {field: 'pckey', title: '秘钥', width: '250', align: 'center'},
+            {field: 'loginno', title: '用户名', width: '150', align: 'center'},
+            {field: 'loginpwd', title: '用户密码', width: '150', align: 'center'},
+            {field: 'createtime', title: '创建时间', width: '160', align: 'center'},
+            {field: 'hascheck', title: '是否允许', width: '170', align: 'center', templet: '#busines'},
+            {field: 'operation', title: '操作', width: '180', align: 'center', toolbar: "#barDemo"}
+          ]],
+          count: pageCount,
+          page: false,
+          done: function (res, curr) {
+            laypage.render({
+              theme: '#ff5a1e',
+              elem: 'page',
+              count: pageCount,
+              curr: offset,
+              limit: size,
+              layout: ['prev', 'page', 'next', 'count', 'limit'],
+              jump: function (obj, first) {
+                if (!first) {
+                  offset = obj.curr;
+                  size = obj.limit;
+                  getShopCustomerManagePageInfo(offset, size, message);
+                }
+              }
+            });
+          }
+        });
+      }
+      table.on('tool(demo)', function (obj) {
+        var data = obj.data;
+        var kid = data.kid;
+        if(obj.event === 'del'){
+          layer.confirm('您确定要删除这条数据吗？', {btn: ['确定', '取消']}, function () {
+            layer.closeAll('dialog');
+            $.ajax({
+              type: "post",
+              url: getAddress()+"/sms/del",
+              data: {"kid": kid},
+              dataType: 'json',
+              success : function(data){
+                if(data.status==0){
+                  layer.msg(data.msg,{icon: 1});
+                  getShopCustomerManagePageInfo(offset, size, message);
+                }else{
+                  layer.msg(data.msg,{icon: 2});
+                }
+              },error: function () {
+                layer.msg("网络故障");
+              }
+            });
+          });
+        }else if(obj.event === 'allow'){
+          layer.confirm('您确定要执行该操作吗？', {btn: ['确定', '取消']}, function () {
+            layer.closeAll('dialog');
+            $.ajax({
+              type: "post",
+              url: getAddress()+"/sms/choose",
+              data: {"kid": kid},
+              dataType: 'json',
+              success : function(data){
+                if(data.status==0){
+                  layer.msg(data.msg,{icon: 1});
+                  getShopCustomerManagePageInfo(offset, size, message);
+                }else{
+                  layer.msg(data.msg,{icon: 2});
+                }
+              },error: function () {
+                layer.msg("网络故障");
+              }
+            });
+          });
+        }else if(obj.event === 'edit'){
+          $.ajax({
+            type: "GET",
+            url: getAddress()+"/sms/getSmsinteruserauth",
+            data: {"kid": kid},
+            success : function(data){
+              if(data.status==0){
+                index(data.data);
+              }else{
+                layer.msg(data.msg,{icon: 2});
+              }
+            },error: function () {
+              layer.msg("网络故障");
+            }
+          });
+        }
+      });
+
+      function index(data) {
+        var obj1=JSON.stringify(data);
+        layui.layer.open({
+          title:data.loginno+":编辑",
+          area: ['40%', '55%'],
+          align:"center",
+          type:2,
+          content:'/myWorkspace/dist/views/home/smsinteruserauthEdit.html?id='+encodeURIComponent(obj1,'utf-8'),
+        });
+      }
+      $("#del_All").click(function () {
+        var checkStatus = table.checkStatus('content-table');
+        if(checkStatus.data.length==0){
+          parent.layer.msg('请先选择要删除的数据行！', {icon: 2});
+          return ;
+        }
+        var ids = "";
+        console.log(checkStatus.data.length);
+        for(var i=0;i<checkStatus.data.length;i++) {
+          ids += checkStatus.data[i].kid+",";
+        }
+        parent.layer.msg('删除中...', {icon: 16,shade: 0.3,time:3000});
+        $.ajax({
+          type: "post",
+          url: getAddress()+"/sms/delAll",
+          data: {'ids': ids},
+          dataType: 'json',
+          success: function (data) {
+            if (data.status == 0) {
+              layer.msg(data.msg, {icon: 1});
+              getShopCustomerManagePageInfo(offset, size, message);
+            } else {
+              layer.msg(data.msg, {icon: 2});
+            }
+          }, error: function () {
+            layer.msg("网络故障");
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+

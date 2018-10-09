@@ -1,0 +1,18 @@
+body{
+    background-color: #f0f3fa;
+    padding: 25px 60px 90px 60px;
+}
+.policy{
+    text-decoration:underline;
+    color: #79a0f4;
+}
+
+.trip button{
+    color: #2974f0;
+    background-color: #FFFFFF;
+    border: 1px solid #2974f0;
+    border-radius: 6px;
+}
+.download:hover{
+    color: #2974f0;
+}
