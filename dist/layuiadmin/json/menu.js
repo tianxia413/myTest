@@ -1,3 +1,4 @@
+/*
 {
   "code": 0
   ,"msg": ""
@@ -224,4 +225,4 @@
     ,"icon": "layui-icon-auz"
     ,"jump": "system/get"
   }]
-}
+}*/

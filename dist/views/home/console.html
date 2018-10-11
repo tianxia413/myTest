@@ -92,6 +92,8 @@
                 <div id="btns" class="mar-top-10">
                     <button type="button" class="layui-btn" id="del_All">批量删除</button>
                     <button type="button" class="layui-btn" id="user_select">查询</button>
+                  <i class="layui-icon layui-icon-circle"></i>
+
                 </div>
               </form>
               <div id="table-content">
@@ -116,14 +118,14 @@
   }).use(['index', 'console']);*/
   </script>
   <script type="text/html" id="barDemo">
-    {{#  if(d.hascheck ===0){ }}
-    <a lay-event="allow" class="demo-class"><button class="layui-btn layui-btn-xs"style="background-color:#1E9FFF">允许</button></a>
+   <!-- {{#  if(d.hascheck ===0){ }}
+    <a lay-event="allow" class="demo-class"><button class="layui-btn layui-btn-xs" style="background-color:#1E9FFF">允许</button></a>
     {{#  }else
     if(d.hascheck ===1){ }}
-    <a lay-event="allow" class="demo-class"><button class="layui-btn layui-btn-xs"style="background-color:#1E9FFF">不允许</button></a>
-    {{#  }}}
-    <a lay-event="edit" class="demo-class" id="edit"><button class="layui-btn layui-btn-xs"style="background-color:#1E9FFF">编辑</button></a>
-    <a lay-event="del" class="demo-class" id="del"><button class="layui-btn layui-btn-xs" style="background-color: #FF5722">删除</button></a>
+    <a lay-event="allow" class="demo-class"><button class="layui-btn layui-btn-xs" style="background-color:#FF5722">不允许</button></a>
+    {{#  }}}-->
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
   </script>
   <script type="text/html" id="busines">
     {{#  if(d.hascheck ===0){ }}
@@ -134,11 +136,8 @@
     {{#  }}}
   </script>
   <script type="text/javascript">
-    layui.use(['form','table','laypage'], function() {
-      var form = layui.form;
-      var table = layui.table;
-      var laypage = layui.laypage;
-      var $ = layui.jquery, layer = layui.layer;
+    layui.use(['form','table','laypage','laydate'], function() {
+      var form = layui.form,table = layui.table,laypage = layui.laypage,$ = layui.jquery,layer = layui.layer;
       form.render();
       //每页显示记录数
       var size = 10;
@@ -179,20 +178,21 @@
         table.render({
           elem: '#content-table',
           data: datalist,
+          height:430,
           cols: [[
             {type: 'checkbox',field: 'check'},
-            {field: 'kid', title: '主键ID', width: '80', align: 'center'},
+            {field: 'kid', title: '主键ID', width: '80', align: 'center',sort: true},
             {field: 'srcip', title: 'IP', width: '200', align: 'center'},
             {field: 'pcsign', title: 'PC标志', width: '231', align: 'center'},
             {field: 'pckey', title: '秘钥', width: '250', align: 'center'},
             {field: 'loginno', title: '用户名', width: '150', align: 'center'},
             {field: 'loginpwd', title: '用户密码', width: '150', align: 'center'},
             {field: 'createtime', title: '创建时间', width: '160', align: 'center'},
-            {field: 'hascheck', title: '是否允许', width: '170', align: 'center', templet: '#busines'},
-            {field: 'operation', title: '操作', width: '180', align: 'center', toolbar: "#barDemo"}
+            {field: 'hascheck', title: '是否允许', width: '130', align: 'center', templet: '#busines'},
+            {field: 'operation', title: '操作', width: '220',align:'center', toolbar: "#barDemo",fixed: 'right'}
           ]],
-          count: pageCount,
           page: false,
+          limit: size,
           done: function (res, curr) {
             laypage.render({
               theme: '#ff5a1e',
@@ -201,10 +201,10 @@
               curr: offset,
               limit: size,
               layout: ['prev', 'page', 'next', 'count', 'limit'],
-              jump: function (obj, first) {
+              jump: function (obj, first){
+              offset = obj.curr;
+              size = obj.limit;
                 if (!first) {
-                  offset = obj.curr;
-                  size = obj.limit;
                   getShopCustomerManagePageInfo(offset, size, message);
                 }
               }

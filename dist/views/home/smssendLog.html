@@ -107,14 +107,13 @@
                                     <select name="interest">
                                         <option value="" >全部</option>
                                         <option value="0" >通知短信</option>
-                                        <option value="4" >验证码短信</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div id="btns" class="mar-top-10">
-                        <button type="button" class="layui-btn" id="del_All">批量删除</button>
+                       <!-- <button type="button" class="layui-btn" id="del_All">批量删除</button>-->
                         <button type="button" class="layui-btn" id="user_select">查询</button>
                     </div>
                 </form>
@@ -149,9 +148,8 @@
 <script src="../../layuiadmin/layui/layui.js"></script>
 <script src="../../layuiadmin/js/modules/common.js"></script>
 <script type="text/html" id="barDemo">
-    <a lay-event="edit" class="demo-class" id="edit"><button class="layui-btn layui-btn-xs" style="background-color:#1E9FFF">编辑</button></a>
-
-    <a lay-event="del" class="demo-class" id="del"><button class="layui-btn layui-btn-xs" style="background-color: #FF5722">删除</button></a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+   <!-- <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>-->
 </script>
 <script type="text/html" id="smsType">
     {{#  if(d.smsType ===0){ }}
@@ -205,10 +203,10 @@
             message.smsType=$("#msType").find("option:selected").val();
             getShopCustomerManagePageInfo(offset, size, message)
         });
-        function getShopCustomerManagePageInfo(offset, size, message) {
+       function getShopCustomerManagePageInfo(offset, size, message) {
             message.size = size;
             message.offset = offset;
-            parent.layer.msg('查询中...', {icon: 16, shade: 0.3, time: 1000});
+            parent.layer.msg('查询中...', {icon: 16, shade: 0.3, time: 100});
             $.ajax({
                 type: "post",
                 crossDomain: true,
@@ -218,7 +216,7 @@
                 contentType: "application/json;charset=UTF-8",
                 success: function (data) {
                     if (data.status == 0) {
-                        getShopCustomesInfo(data.data.datalist, data.data.count)
+                        getShopCustomesInfo(data.data, data.count)
                     } else {
                         layer.msg(data.msg,{icon: 2});
                     }
@@ -228,12 +226,14 @@
             });
         }
         function getShopCustomesInfo(datalist, pageCount) {
+            console.log(pageCount);
             table.render({
                 elem: '#content-table',
+                height:430,
                 data: datalist,
                 cols: [[
                     {type: 'checkbox'},
-                    {field: 'keyID', title: '主键ID', width: '80', align: 'center'},
+                    {field: 'keyID', title: '主键ID', width: '80', align: 'center', sort: true},
                     {field: 'appFlag', title: '发送方标识', width: '100', align: 'center'},
                     {field: 'appName', title: '授权应用名称', width: '150', align: 'center'},
                     {field: 'toPhoneNum', title: '电话号码', width: '209', align: 'center'},
@@ -246,6 +246,7 @@
                     {field: 'operation', title: '操作', width: '200', align: 'center', toolbar: "#barDemo"}
                 ]],
                 page: false,
+                limit: size,
                 done: function (res, curr) {
                     laypage.render({
                         theme: '#ff5a1e',
@@ -255,9 +256,9 @@
                         limit: size,
                         layout: ['prev', 'page', 'next', 'count', 'limit'],
                         jump: function (obj, first) {
+                            offset = obj.curr;
+                            size = obj.limit;
                             if (!first) {
-                                offset = obj.curr;
-                                size = obj.limit;
                                 getShopCustomerManagePageInfo(offset, size, message);
                             }
                         }
@@ -289,6 +290,8 @@
                     });
                 });
             }else if(obj.event === 'edit'){
+                var data = obj.data;
+
                 $.ajax({
                     type: "GET",
                     url: getAddress()+"/smslog/toedit",
@@ -372,10 +375,10 @@
                     contentType: "application/json;charset=UTF-8",
                     success : function(data){
                         if(data.status==0){
-                            layer.msg(data.msg,{icon: 1});
+                            layer.msg(data.msg,{icon: 1,time: 500});
                             window.setTimeout(function () {
-                                window.parent.location.reload();
-                            }, 200);
+                                getShopCustomerManagePageInfo(offset, size, message);
+                            }, 10);
                         }else{
                             layer.msg(data.msg,{icon: 2});
                         }
